@@ -58,8 +58,6 @@ new_version="v$new_version"
 
 echo "Current version: $current_version"
 echo "New version: $new_version"
-
-# Output the new version to a file (optional, for CI/CD pipelines)
-echo "version=$new_version" >> $GITHUB_OUTPUT
+echo "$new_version" > version.txt
 
 exit 0

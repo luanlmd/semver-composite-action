@@ -6,14 +6,17 @@ inputs:
     description: 'Path to the checked-out repository'
     required: true
 
+outputs:
+  version:
+    description: 'The next semantic version calculated by the action'
+    value: ${{ steps.semver.outputs.version }}
+
 runs:
   using: "composite"
   steps:
     - name: SemVer
       shell: bash
-      run: ${{ github.action_path }}/semver.sh ${{ inputs.repo-path }}
+      run: |
+        ${{ github.action_path }}/semver.sh
+        cat version.txt >> $GITHUB_OUTPUT
 
-outputs:
-  version:
-    description: 'The next semantic version calculated by the action'
-    value: ${{ steps.semver.outputs.version }}
