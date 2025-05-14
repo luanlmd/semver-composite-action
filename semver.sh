@@ -1,10 +1,6 @@
 #!/bin/bash
 
-# cd into first param
-cd $1 || exit 1
-
 git log -1
-
 git fetch --tags
 
 # Function to validate and parse current version
@@ -37,7 +33,7 @@ get_current_version() {
 
 # Main script
 # Get current branch name
-branch_name=$(git log --merges --first-parent -n 1 --pretty=%s | grep -oE "Merge branch '[^']+'|Merge pull request #[0-9]+ from [^/]+/[^[:space:]]+" | grep -oE "'[^']+'|[^/]+$" | tr -d "'")
+branch_name=$(git log --merges --first-parent -n 1 --pretty=%s | cut -d'/' -f2)
 
 # Get current version
 current_version=$(get_current_version)
