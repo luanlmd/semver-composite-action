@@ -13,19 +13,15 @@ jobs:
         with:
           fetch-depth: 0 
 
-      # - name: Tag
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     git tag v${{ github.run_number }}
-      #     git push origin v${{ github.run_number }}
-
       - name: SemVer
         with:
           repo-path: ${{ github.workspace }}
         id: semver
         uses: ./
 
-      - name: Test SemVer
+      - name: Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Version: ${{ steps.semver.outputs.version }}"
+          git tag ${{ steps.semver.outputs.version }}
+          git push origin ${{ steps.semver.outputs.version }}
