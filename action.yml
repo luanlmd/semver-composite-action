@@ -1,8 +1,16 @@
 name: 'semver-composite-action'
 description: 'Semantic Versioning Composite Action a github composite action to figure out the next semantic version based on your last tags and merged PRs'
+
 runs:
   using: "composite"
   steps:
     - name: SemVer
       shell: bash
-      run: ./semver.sh
+      run: |
+        ./semver.sh
+        echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
+
+outputs:
+  version:
+    description: 'The next semantic version calculated by the action'
+    value: ${{ steps.semver.outputs.version }}

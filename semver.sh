@@ -55,8 +55,7 @@ echo "Current version: $current_version"
 echo "New version: $new_version"
 
 # Output the new version to a file (optional, for CI/CD pipelines)
-# echo "$new_version" > version.txt
-echo "$new_version" >> $GITHUB_OUTPUT
+echo "$new_version" > version.txt
 
 # Optionally tag the new version (uncomment to enable)
 # git tag "$new_version"
