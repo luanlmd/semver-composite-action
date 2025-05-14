@@ -1,8 +1,6 @@
 #!/bin/bash
 
 git log -1 --pretty=%s
-# git fetch --tags
-# git fetch --all
 git log --merges --first-parent -n 1 --pretty=%s | cut -d'/' -f2
 
 # Function to validate and parse current version
@@ -33,8 +31,6 @@ get_current_version() {
     fi
 }
 
-# Main script
-# Get current branch name
 branch_name=$(git log --merges --first-parent -n 1 --pretty=%s | cut -d'/' -f2)
 
 # Get current version
@@ -59,7 +55,6 @@ new_version="v$new_version"
 echo "Current version: $current_version"
 echo "New version: $new_version"
 
-echo "version=$new_version" > version.txt
-cat version.txt >> $GITHUB_OUTPUT
+echo "version=$new_version" >> $GITHUB_OUTPUT
 
 exit 0

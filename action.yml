@@ -18,5 +18,3 @@ runs:
       id: semver
       shell: bash
       run: ${{ github.action_path }}/semver.sh
-
-
