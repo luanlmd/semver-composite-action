@@ -1,14 +1,20 @@
 name: 'semver-composite-action'
 description: 'Semantic Versioning Composite Action a github composite action to figure out the next semantic version based on your last tags and merged PRs'
 
+inputs:
+  repo-path:
+    description: 'Path to the checked-out repository'
+    required: true
+
 runs:
   using: "composite"
   steps:
     - name: SemVer
       shell: bash
-      working-directory: ${{ github.action_path }}
+      # working-directory: ${{ github.action_path }}
+      working-directory: ${{ inputs.repo-path }}
       run: |
-        ./semver.sh
+        ./${{ github.action_path }}/semver.sh
         echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
 
 outputs:
