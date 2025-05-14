@@ -5,7 +5,7 @@ cd $1 || exit 1
 
 git log -1
 
-git fetch -a
+git fetch --tags
 
 # Function to validate and parse current version
 parse_version() {
