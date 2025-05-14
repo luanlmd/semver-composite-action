@@ -11,8 +11,7 @@ runs:
   steps:
     - name: SemVer
       shell: bash
-      working-directory: ${{ inputs.repo-path }}
-      run: ${{ github.action_path }}/semver.sh
+      run: ${{ github.action_path }}/semver.sh ${{ inputs.repo-path }}
 
 outputs:
   version:

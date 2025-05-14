@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# cd into first param
+cd $1 || exit 1
+
+git log -1
+
 # Function to validate and parse current version
 parse_version() {
     local version=$1
@@ -19,7 +24,7 @@ parse_version() {
 # Function to get current version from git tags
 get_current_version() {
     # Get the latest tag that looks like a SemVer with optional 'v' prefix
-    local latest_tag=$(git tag --sort=-v:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
+    local latest_tag=$(git tag --sort=-v:refname --list "v*.*.*" | head -n 1)
     if [ -z "$latest_tag" ]; then
         echo "No valid SemVer tags found. Using v0.0.0 as default."
         echo "v0.0.0"
