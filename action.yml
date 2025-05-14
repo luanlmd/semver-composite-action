@@ -5,4 +5,4 @@ runs:
   steps:
     - name: SemVer
       shell: bash
-      run: semver.sh
+      run: ./semver.sh
