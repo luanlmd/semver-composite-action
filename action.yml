@@ -6,6 +6,7 @@ runs:
   steps:
     - name: SemVer
       shell: bash
+      working-directory: ${{ github.action_path }}
       run: |
         ./semver.sh
         echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
