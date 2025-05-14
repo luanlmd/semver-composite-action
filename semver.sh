@@ -36,4 +36,4 @@ else
   TAG=$CURRENT_TAG
 fi;
 
-echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
+echo "version=$TAG" >> $GITHUB_OUTPUT
