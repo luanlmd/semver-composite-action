@@ -19,3 +19,13 @@ jobs:
         run: |
           git tag v${{ github.run_number }}
           git push origin v${{ github.run_number }}
+
+      - name: SemVer
+        with:
+          repo-path: ${{ github.workspace }}
+        id: semver
+        uses: ./
+
+      - name: Test SemVer
+        run: |
+          echo "Version: ${{ steps.semver.outputs.version }}"
