@@ -8,10 +8,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Tag
-        run: |
-          git tag v${{ github.run_number }}
-          git push origin v${{ github.run_number }}
+      - name: Create tag
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ inputs.github-token }}
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/v${{ github.run_number }}",
+              sha: context.sha
+            })
