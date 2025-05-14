@@ -5,6 +5,8 @@ cd $1 || exit 1
 
 git log -1
 
+git fetch -a
+
 # Function to validate and parse current version
 parse_version() {
     local version=$1
