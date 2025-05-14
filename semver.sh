@@ -58,6 +58,7 @@ new_version="v$new_version"
 
 echo "Current version: $current_version"
 echo "New version: $new_version"
-echo "$new_version" > version.txt
+
+echo "version=$new_version" > version.txt
 
 exit 0
