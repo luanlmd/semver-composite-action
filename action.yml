@@ -17,8 +17,6 @@ runs:
     - name: SemVer
       id: semver
       shell: bash
-      run: |
-        ${{ github.action_path }}/semver.sh
-        cat version.txt
-        cat version.txt >> $GITHUB_OUTPUT
+      run: ${{ github.action_path }}/semver.sh
+
 

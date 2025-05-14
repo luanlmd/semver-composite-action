@@ -60,5 +60,6 @@ echo "Current version: $current_version"
 echo "New version: $new_version"
 
 echo "version=$new_version" > version.txt
+cat version.txt >> $GITHUB_OUTPUT
 
 exit 0
