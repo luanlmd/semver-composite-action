@@ -11,11 +11,8 @@ runs:
   steps:
     - name: SemVer
       shell: bash
-      # working-directory: ${{ github.action_path }}
       working-directory: ${{ inputs.repo-path }}
-      run: |
-        ${{ github.action_path }}/semver.sh
-        echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
+      run: ${{ github.action_path }}/semver.sh
 
 outputs:
   version:

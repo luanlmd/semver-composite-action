@@ -1,64 +1,39 @@
 #!/bin/bash
 
-# Function to validate and parse current version
-parse_version() {
-    local version=$1
-    # Remove 'v' prefix if present
-    version=${version#v}
-    if [[ $version =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-        major=${BASH_REMATCH[1]}
-        minor=${BASH_REMATCH[2]}
-        patch=${BASH_REMATCH[3]}
-        return 0
-    else
-        echo "Error: Invalid version format. Expected vX.Y.Z or X.Y.Z, got $version"
-        exit 1
-    fi
-}
+git fetch -a
 
-# Function to get current version from git tags
-get_current_version() {
-    # Get the latest tag that looks like a SemVer with optional 'v' prefix
-    local latest_tag=$(git tag --sort=-v:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
-    if [ -z "$latest_tag" ]; then
-        echo "No valid SemVer tags found. Using v0.0.0 as default."
-        echo "v0.0.0"
-    else
-        echo "$latest_tag"
-    fi
-}
+echo "Loading current tag"
+CURRENT_TAG=`git describe --exact-match --tags HEAD 2> /dev/null`
 
-# Main script
-# Get current branch name
-branch_name=$(git log --merges --first-parent -n 1 --pretty=%s | grep -oE "Merge branch '[^']+'|Merge pull request #[0-9]+ from [^/]+/[^[:space:]]+" | grep -oE "'[^']+'|[^/]+$" | tr -d "'")
+echo "Loading last tag"
+LAST_TAG=`git tag --sort=version:refname --list "v*.*.*" | tail -1`
+TAG=$LAST_TAG
 
-# Get current version
-current_version=$(get_current_version)
-parse_version "$current_version"
+echo "Current Tag: [$CURRENT_TAG]"
+echo "Last Tag: [$LAST_TAG]"
 
-# Determine version update based on branch name
-if [[ $branch_name =~ ^(release|feature)-.* ]]; then
-    # Minor update for release and feature branches
-    new_version="$major.$((minor + 1)).0"
-elif [[ $branch_name =~ ^hotfix-.* ]]; then
-    # Patch update for hotfix branches
-    new_version="$major.$minor.$((patch + 1))"
+if [[ -z "$CURRENT_TAG" ]]; then
+  CURRENT_RELEASE=`git log --merges -n 1 | grep -o "release-.*"`
+  MERGED_RELEASE=`git log --merges -n 1 | grep -o "release-.*" | cut -f2 -d"-"`
+
+  if [[ "$MERGED_RELEASE" =~ ^[0-9]+\.[0-9]+\.0$ ]]; then
+    echo "New release found"
+    TAG="v$MERGED_RELEASE"
+  elif [[ "$CURRENT_RELEASE" =~ ^release.* ]]; then
+    echo "New release without number found"
+    TAG=`echo $LAST_TAG | cut -d. -f1,2 | awk -F. -v OFS=. '{$NF += 1 ; print $1"."$2".0"}'`
+  else
+    echo "Bumping patch version: $LAST_TAG"
+    TAG=`echo $LAST_TAG | awk -F. -v OFS=. '{$NF += 1 ; print}'`
+  fi;
+
+  if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "New generated tag: $TAG"
+    git tag $TAG
+    git push --tags
+  fi;
 else
-    echo "Error: Branch name '$branch_name' does not match release-*, feature-*, or hotfix-* patterns"
-    exit 1
-fi
+  TAG=$CURRENT_TAG
+fi;
 
-# Add 'v' prefix to new version
-new_version="v$new_version"
-
-echo "Current version: $current_version"
-echo "New version: $new_version"
-
-# Output the new version to a file (optional, for CI/CD pipelines)
-echo "$new_version" > version.txt
-
-# Optionally tag the new version (uncomment to enable)
-# git tag "$new_version"
-# git push origin "$new_version"
-
-exit 0
+echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
