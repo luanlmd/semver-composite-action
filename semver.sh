@@ -1,8 +1,8 @@
 #!/bin/bash
 
 git log -1 --pretty=%s
-git fetch --tags
-git fetch --all
+# git fetch --tags
+# git fetch --all
 git log --merges --first-parent -n 1 --pretty=%s | cut -d'/' -f2
 
 # Function to validate and parse current version
